@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package led;
+
+service LEDAnalyzerService {
+  rpc Run (RunRequest) returns (RunResponse);
+}
+
+message RunRequest {
+  string source = 1;         // "image" or "path"
+  string path = 2;           // 파일 경로 (source="path"일 때 사용)
+  bytes image_bytes = 3;     // raw image data (JPEG/PNG) (source="image"일 때 사용)
+  string all_roi_dict = 4;   // JSON string
+  string map_led = 5;        // JSON string
+  float threshold = 6;
+}
+
+message RunResponse {
+  string final_results = 1;  // JSON string
+  //bytes final_image = 2;     // JPEG encoded bytes
+}

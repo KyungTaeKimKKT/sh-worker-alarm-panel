@@ -1,0 +1,111 @@
+### worker/alarm-panel/values.yaml
+replicaCount: 1
+
+image:
+  repository: shinwoohipo/worker-alarm-panel
+  tag: "1.0.0"
+  pullPolicy: Always
+
+service:
+  name: alarm-panel-114
+  type: ClusterIP
+  port: 5000
+  targetPort: 5000  # containerPort 로 mapping됨
+  containerPort: 5000
+
+command:
+  - python
+  - main.py
+
+nfs:
+  server: nas.host.sh
+  path: /volume1/django/192.168.10.249/media
+  size: 200Gi
+
+
+### 별도 env.yaml 로 관리함 : update시, 붙여 넣기
+### deployment.yaml 에서 env 추가함.
+env:
+  - name: IS_DOCKER
+    value: "true"
+
+
+
+# volumeMounts:
+#   - name: grpc-ping-media
+#     mountPath: /app/media
+
+
+# volumes:
+#   - name: grpc-ping-media
+#     persistentVolumeClaim:
+#       claimName: grpc-ping-media-pvc
+
+
+resources: {}
+
+# nodeSelector:
+#   dns-role: "true"
+
+tolerations: []
+### deployment.yaml 에서 Affinity 추가함.
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+          - key: alarm-panel.cluster
+            operator: In
+            values: ["role"]
+          - key: env
+            operator: In
+            values: ["production"]
+
+
+### ✅ serviceaccount.yaml 용
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+### ✅ ingress-health.yaml 용
+### ingress.yaml 에서도  true면 맨 앞단에 추가함.
+ingressHealth:
+  namePostfix: ingress-health
+  enabled: false
+
+### ✅ ingress.yaml 용
+ingress:
+  enabled: true
+  className: traefik
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: grpc
+    traefik.ingress.kubernetes.io/protocol: h2c
+  hosts:
+    - host: alarm-panel-114.worker.sh
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: alarm-panel-114
+              port:
+                number: 5000
+  tls: []
+
+### ✅ ingress-route.yaml 용
+ingressRoute:
+  enabled: false
+  # routes:
+  #   - Host: "scraping-gov.grpc.sh"
+  #     Port: 50160
+
+### ✅ httproute.yaml 용 ==> 단순한거라, 그냥 ingress 사용함.
+httpRoute:
+  enabled: false
+
+### ✅ hpa.yaml 용
+autoscaling:
+  enabled: false
+

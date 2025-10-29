@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environments
+venv*/
+.env/
+.env.*
+*.env
+.env*
+
+# Django / DRF app
+app/media/
+app/staticfiles/
+app/static/
+app/*.log
+app/*.sqlite3
+app/migrations/*/__pycache__/
+app/logs/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+
+# Byte-compiled and packaging
+build/
+dist/
+*.egg-info/
+
+# OS / System
+.DS_Store
+Thumbs.db
+
+# Docker / Helm / K8s
+*.pid
+*.tar
+*.tgz

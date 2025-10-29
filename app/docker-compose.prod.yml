@@ -1,0 +1,49 @@
+services:
+  grpc-alarm-panel-1:
+    image: shinwoohipo/worker_alarm_panel:latest
+    container_name: worker_alarm_panel-1
+    stdin_open: true  # -i
+    tty: true         # -t
+    env_file:
+      - .env
+
+    environment:
+      SOURCE_URL: 192.168.14.114
+      SOURCE_PORT: 10514
+      RTSP_CONNECTION_URL: 192.168.14.114
+
+    volumes:
+      - /home/kkt/django-nas:/drf_media
+
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+
+    restart: always
+    command: ["python3", "main.py"]
+
+  grpc-alarm-panel-2:
+    image: shinwoohipo/worker_alarm_panel:latest
+    container_name: worker_alarm_panel-2
+    stdin_open: true  # -i
+    tty: true         # -t
+    env_file:
+      - .env
+
+    environment:
+      SOURCE_URL: 192.168.14.115
+      SOURCE_PORT: 10515
+      RTSP_CONNECTION_URL: 192.168.14.115
+
+    volumes:
+      - /home/kkt/django-nas:/drf_media
+
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+
+    restart: always
+    command: ["python3", "main.py"]
+
+  
+
+
+ 
