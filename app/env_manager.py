@@ -16,4 +16,4 @@ def get_env(key, default=None):
     if not LOCAL_ENV_LOADED:
         return os.environ.get(key, default)
     else:
-        return os.environ.get(key) or dotenv.get_key(env_path) or default
+        return os.environ.get(key) or dotenv.get_key(env_path, key) or default
